@@ -2,32 +2,74 @@ import { NextResponse } from "next/server"
 
 export async function POST(request: Request) {
   try {
-    const { params } = await request.json()
+    const rawBody = await request.text()
+    let payload: { params?: Record<string, string> } = {}
+
+    if (rawBody) {
+      try {
+        payload = JSON.parse(rawBody)
+      } catch {
+        payload = { params: { raw: rawBody } }
+      }
+    }
+
+    const params = (payload.params ?? payload) as Record<string, string>
+    const emailBody = Object.entries(params)
+      .filter(([, value]) => value !== undefined && value !== null)
+      .map(([key, value]) => `<li><strong>${key}</strong>: ${String(value)}</li>`)
+      .join("")
     const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID
     const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID
     const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
 
-    if (!serviceId || !templateId || !publicKey) {
-      return NextResponse.json({ error: "EmailJS configuration is missing" }, { status: 500 })
+    if (serviceId && templateId && publicKey) {
+      const response = await fetch("https://api.emailjs.com/api/v1.0/email/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          service_id: serviceId,
+          template_id: templateId,
+          user_id: publicKey,
+          template_params: params,
+        }),
+      })
+
+      if (response.ok) {
+        return NextResponse.json({ ok: true })
+      }
+
+      const errorBody = await response.text()
+      console.error("EmailJS request failed", errorBody)
     }
 
-    const response = await fetch("https://api.emailjs.com/api/v1.0/email/send", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        service_id: serviceId,
-        template_id: templateId,
-        user_id: publicKey,
-        template_params: params,
-      }),
+    const host = process.env.SMTP_HOST || "smtp.gmail.com"
+    const port = Number(process.env.SMTP_PORT || 587)
+    const user = process.env.SMTP_USER || process.env.EMAIL_USER
+    const pass = process.env.SMTP_PASS || process.env.EMAIL_PASS
+    const from = process.env.SMTP_FROM || process.env.EMAIL_FROM || user
+    const to = process.env.SMTP_TO || process.env.EMAIL_TO || user
+
+    if (!user || !pass) {
+      return NextResponse.json({ error: "No mail provider configuration found" }, { status: 500 })
+    }
+
+    const { createTransport } = await import("nodemailer")
+    const transporter = createTransport({
+      host,
+      port,
+      secure: port === 465,
+      auth: { user, pass },
     })
 
-    if (!response.ok) {
-      const errorBody = await response.text()
-      return NextResponse.json({ error: errorBody || "Unable to send email" }, { status: 502 })
-    }
+    await transporter.sendMail({
+      from,
+      to,
+      subject: params.message_type || "New message from Piadrol",
+      html: `
+        <h3>New message from Piadrol</h3>
+        <ul>${emailBody}</ul>
+      `,
+    })
 
     return NextResponse.json({ ok: true })
   } catch (error) {

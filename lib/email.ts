@@ -9,27 +9,37 @@ export function isEmailConfigured() {
 }
 
 export async function sendEmail(params: Record<string, string>) {
-  if (!isEmailConfigured()) throw new Error("Email service is not configured")
+  try {
+    const normalized = Object.fromEntries(
+      Object.entries(params).map(([key, value]) => [key, String(value ?? "")]),
+    )
 
-  const response = await fetch("/api/contact", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ params }),
-  })
+    const response = await fetch("/api/contact", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ params: normalized }),
+    })
 
-  if (!response.ok) {
-    const error = await response.text()
-    throw new Error(error || "Unable to send email")
+    if (!response.ok) {
+      const error = await response.text()
+      throw new Error(error || "Unable to send email")
+    }
+
+    return response.json()
+  } catch (error) {
+    console.error("Email sending failed", error)
+    throw error
   }
-
-  return response.json()
 }
 
 export async function notifyFirstVisit() {
-  if (typeof window === "undefined" || !isEmailConfigured()) return
+  if (typeof window === "undefined") return
+
   const key = "piadrol-visit-notified"
   if (window.localStorage.getItem(key)) return
+
   window.localStorage.setItem(key, "true")
+
   try {
     await sendEmail({
       message_type: "First website visit",
@@ -39,7 +49,8 @@ export async function notifyFirstVisit() {
       screen: `${window.screen.width}x${window.screen.height}`,
       user_agent: navigator.userAgent,
     })
-  } catch {
+  } catch (error) {
+    console.error("First visit notification failed", error)
     window.localStorage.removeItem(key)
   }
 }
