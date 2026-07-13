@@ -33,18 +33,17 @@ export function Leadership() {
     <div className="people-grid">{t.leadership.people.map(person =>
       <article key={person.role}>
         {person.initials.startsWith("/") ? (
-          <div className="w-[128] h-[128]">
-
+          <div className="w-[128px] h-[128px]">
             <Image
               src={person.initials}
               alt={person.name}
               width={180}
               height={180}
-              className="h-full w-full  rounded-full object-cover"
+              className="h-full w-full rounded-full object-cover"
             />
           </div>
         ) : (
-          <span>{""}</span>
+          <div className="person-mark">{person.initials}</div>
         )}
         <div><p className="person-role">{person.role}</p>
           <h3>{person.name}</h3>

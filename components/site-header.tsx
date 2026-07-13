@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image"
 import { useEffect, useState } from "react"
 import { ArrowUpRight, Languages, Menu, X } from "lucide-react"
 import { useLanguage } from "@/components/language-provider"
@@ -21,7 +22,17 @@ export function SiteHeader() {
 
   return <header className={`site-header ${scrolled || open ? "site-header-solid" : ""}`}>
     <div className="header-inner">
-      <a href="#top" className="brand" aria-label="Piadrol home"><span className="brand-mark">P</span><span>PIADROL</span></a>
+      <div className="brand-group">
+        <a href="#top" className="brand" aria-label="Piadrol home"><span className="brand-mark">P</span><span>PIADROL</span></a>
+        <div className="header-flags" aria-label="Iran and Austria flags">
+          <span className="flag-pill" title="Iran">
+            <Image src="/iran.webp" alt="Iran flag" width={24} height={24} className="flag-image" />
+          </span>
+          <span className="flag-pill" title="Austria">
+            <Image src="/austria.svg" alt="Austria flag" width={24} height={24} className="flag-image" />
+          </span>
+        </div>
+      </div>
       <nav className="desktop-nav" aria-label="Main navigation">{links.map(([id, label]) => <a href={`#${id}`} key={id}>{label}</a>)}</nav>
       <div className="header-actions">{switcher}<a href="#contact" className="header-cta">{t.nav.cta}<ArrowUpRight aria-hidden="true" /></a><button className="menu-button" onClick={() => setOpen(!open)} aria-expanded={open} aria-controls="mobile-menu" aria-label="Toggle menu">{open ? <X /> : <Menu />}</button></div>
     </div>

@@ -1,5 +1,3 @@
-import emailjs from "@emailjs/browser"
-
 const config = {
   publicKey: process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY,
   serviceId: process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID,
@@ -12,7 +10,19 @@ export function isEmailConfigured() {
 
 export async function sendEmail(params: Record<string, string>) {
   if (!isEmailConfigured()) throw new Error("Email service is not configured")
-  return emailjs.send(config.serviceId!, config.templateId!, params, { publicKey: config.publicKey! })
+
+  const response = await fetch("/api/contact", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ params }),
+  })
+
+  if (!response.ok) {
+    const error = await response.text()
+    throw new Error(error || "Unable to send email")
+  }
+
+  return response.json()
 }
 
 export async function notifyFirstVisit() {

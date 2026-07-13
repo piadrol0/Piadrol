@@ -4,8 +4,8 @@ export const company = {
   name: "Piadrol",
   email: "armanem84@gmail.com",
   phone: "+43 1 000 0000",
-  austria: "Vienna, Austria",
-  iran: "Tehran, Iran",
+  austria: "Salzburger Straße 12, 5020 Salzburg, Austria",
+  iran: "بلوار اندرزگو، کوچه مراد، پلاک 10، تهران، ایران",
 };
 
 export const content = {
@@ -72,7 +72,7 @@ export const content = {
         {
           role: "Chief Executive Officer",
           name: "Farnam Babaei",
-          initials: "FB",
+          initials: "/baba.png",
           bio: "A hands-on trade leader who believes strong business starts with clear conversations and dependable relationships.",
         },
         {
@@ -80,6 +80,30 @@ export const content = {
           name: "Arya Babaei",
           initials: "/arya.jpeg",
           bio: "Bringing cross-cultural commercial insight and a long-term approach to every partnership.",
+        },
+        {
+          role: "Director of Operations",
+          name: "Mohammad Mohammadi",
+          initials: "/w3.jpg",
+          bio: "Ensures dependable execution across sourcing, coordination, and day-to-day client delivery.",
+        },
+        {
+          role: "Market Development Lead",
+          name: "Niloofar Rahimi",
+          initials: "/w1.jpg",
+          bio: "Builds long-term commercial relationships and identifies new opportunities in target markets.",
+        },
+        {
+          role: "Trade Analyst",
+          name: "Ali Rezaei",
+          initials: "/w2.jpg",
+          bio: "Brings disciplined research and commercial insight to route planning and deal evaluation.",
+        },
+        {
+          role: "Business Development Manager",
+          name: "Mina Farahani",
+          initials: "MF",
+          bio: "Supports partner growth with a practical, relationship-first approach to new engagements.",
         },
       ],
     },
@@ -171,14 +195,39 @@ export const content = {
         {
           role: "مدیرعامل",
           name: "فرنام بابایی",
-          initials: "FB",
+          initials: "/baba.png",
           bio: "مدیری فعال در تجارت که باور دارد همکاری خوب با گفت‌وگوی شفاف و رابطه‌ای قابل اعتماد شروع می‌شود.",
         },
         {
-          role: "هم‌بنیان‌گذار",
+          role: "بنیان‌گذار",
           name: "آریا بابایی",
-          initials: "AB",
+          initials: "/arya.jpeg",
           bio: "با شناخت تجاری بین‌فرهنگی و رویکردی بلندمدت در توسعه هر همکاری.",
+        },
+        {
+          role: "مدیر عملیات",
+          name: "محمد محمدی",
+          initials: "/w3.jpg",
+          bio: "اجرای دقیق و قابل اعتماد در تأمین، هماهنگی و تحویل روزمره‌ی خدمات را تضمین می‌کند.",
+        },
+        {
+          role: "سرپرست توسعه بازار",
+          name: "نیلوفر رحیمی",
+          initials: "/w1.jpg",
+          bio: "روابط تجاری بلندمدت می‌سازد و فرصت‌های جدید در بازارهای هدف را شناسایی می‌کند.",
+        },
+        {
+          role: "تحلیلگر تجارت",
+          name: "علی رضایی",
+          initials: "/w2.jpg",
+          bio: "با پژوهش دقیق و تحلیل تجاری، در برنامه‌ریزی مسیر و ارزیابی پیشنهادها نقش کلیدی دارد.",
+        },
+        {
+          role: "مدیر توسعه کسب‌وکار",
+          name: "مینا فراهانی",
+          initials: "MF",
+
+          bio: "با رویکردی عملی و رابطه‌محور، رشد شرکای جدید را پشتیبانی می‌کند.",
         },
       ],
     },
