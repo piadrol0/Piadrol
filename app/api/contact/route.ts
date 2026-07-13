@@ -22,6 +22,15 @@ export async function POST(request: Request) {
     const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID
     const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
 
+    console.log("Mail env check", {
+      hasServiceId: Boolean(serviceId),
+      hasTemplateId: Boolean(templateId),
+      hasPublicKey: Boolean(publicKey),
+      hasSmtpHost: Boolean(process.env.SMTP_HOST || process.env.EMAIL_HOST),
+      hasSmtpUser: Boolean(process.env.SMTP_USER || process.env.EMAIL_USER),
+      hasSmtpPass: Boolean(process.env.SMTP_PASS || process.env.EMAIL_PASS),
+    })
+
     if (serviceId && templateId && publicKey) {
       const response = await fetch("https://api.emailjs.com/api/v1.0/email/send", {
         method: "POST",
@@ -61,6 +70,8 @@ export async function POST(request: Request) {
       auth: { user, pass },
     })
 
+    console.log("Attempting SMTP send", { host, port, from, to })
+
     await transporter.sendMail({
       from,
       to,
@@ -74,6 +85,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: true })
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unable to send email"
+    console.error("Mail send failed", error)
     return NextResponse.json({ error: message }, { status: 500 })
   }
 }
